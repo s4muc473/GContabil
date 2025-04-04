@@ -1,0 +1,32 @@
+const mongoose = require('mongoose');
+const { Schema, Types } = mongoose;
+
+const entrieSchema = new mongoose.Schema({
+    cause: { 
+        type: String, 
+        required: true
+    },
+    value: { 
+        type: Types.Decimal128, 
+        required: true 
+    },
+    date: { 
+        type: Date, 
+        default: Date.now, 
+        required: true 
+    },
+    description: { 
+        type: String, 
+        required: false, 
+        trim: true 
+    },
+    observation: { 
+        type: String, 
+        required: false, 
+        trim: true 
+    }
+});
+
+const Entrie = mongoose.model('Entrie', entrieSchema);
+
+module.exports = Entrie;
