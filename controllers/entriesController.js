@@ -34,6 +34,7 @@ exports.getEntries = async (req, res) => {
         res.status(200).json(entries);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar Entries', error });
+        console.log(error);
     }
 };
 

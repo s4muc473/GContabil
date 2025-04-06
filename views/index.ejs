@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GContabil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .parent-main {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(231, 192, 19, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .div-logo h1 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+        }
+
+        .div-logo strong {
+            color: #e7c013;
+        }
+
+        .container-login {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .container-login input {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+        }
+
+        .container-login input::placeholder {
+            color: #ccc;
+        }
+
+        .container-login button {
+            padding: 12px;
+            background-color: #e7c013;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .container-login button:hover {
+            background-color: #f0d53b;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="parent-main">
+        <div class="div-logo">
+            <h1><strong>G</strong>Contabil</h1>
+        </div>
+
+        <div class="container-login">
+            <input type="password" placeholder="Senha" id="input-password">
+            <button onclick="handleLogin()">Entrar</button>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin() {
+            const password = document.getElementById('input-password').value;
+            if (password) {
+                alert('Login efetuado com sucesso!');
+                // Aqui você pode redirecionar ou validar a senha real
+            } else {
+                alert('Por favor, insira a senha.');
+            }
+        }
+    </script>
+</body>
+</html>
