@@ -1,6 +1,8 @@
 require('dotenv').config(); 
 const express = require('express');
+const mongoose = require('./config/db');  
 const bodyParser = require('body-parser');
+
 const userRoutes = require('./routes/userRoutes');
 const path = require('path');
 
@@ -12,10 +14,9 @@ app.set('view engine', 'ejs');
 
 app.set('views', path.join(__dirname, 'views'));
 
-app.get('/', (res) => {
+app.get('/', (req, res) => {
   res.render('index'); 
 });
-
 
 // Usando rotas
 app.use('/api', userRoutes);
