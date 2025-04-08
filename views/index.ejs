@@ -242,7 +242,7 @@
         async function handleLogin() {
             const password = document.getElementById('input-password');
 
-            const connection = await fetch(`${url}/auth/${password.value}`);
+            const connection = await fetch(`${url}/auth/${password.value}`)
             const dados = await connection.json();
 
             if (dados.status == 1) {
