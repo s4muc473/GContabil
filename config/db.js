@@ -2,11 +2,6 @@ require('dotenv').config();
 
 const mongoose = require('mongoose');
 
-<<<<<<< HEAD
-=======
-console.log('URL do MongoDB: ', process.env.MONGODB_URI); 
-
->>>>>>> 54459d3cc1efbdd765822d16aa8b459b41b666f1
 if (!process.env.MONGODB_URI) {
   console.error('Erro: MONGODB_URI não definida no arquivo .env');
   process.exit(1);
