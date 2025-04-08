@@ -1,8 +1,10 @@
+require('dotenv').config(); 
+
 const mongoose = require('mongoose');
 
 if (!process.env.MONGODB_URI) {
   console.error('Erro: MONGODB_URI não definida no arquivo .env');
-  process.exit(1);  // Encerra o processo se a URL não estiver definida
+  process.exit(1);
 }
 
 mongoose.connect(process.env.MONGODB_URI)
@@ -10,5 +12,6 @@ mongoose.connect(process.env.MONGODB_URI)
     console.log('Conectado ao MongoDB com sucesso');
   })
   .catch((err) => {
-    console.error('Erro ao conectar ao MongoDB:', err);
+    console.error('Erro ao conectar ao MongoDB:', err.message);  // Mostre a mensagem de erro mais detalhada
+    console.error(err);  // Mostre o erro completo para mais detalhes
   });

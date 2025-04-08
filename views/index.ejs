@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,76 +14,185 @@
         }
 
         body {
-            height: 100vh;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #fff;
+            color: #111;
+            padding: 20px;
         }
 
         .parent-main {
-            background-color: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(231, 192, 19, 0.3);
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 40px;
+            gap: 24px;
             width: 100%;
-            max-width: 400px;
+            max-width: 360px;
         }
 
         .div-logo h1 {
-            font-size: 2.5rem;
-            letter-spacing: 2px;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #111;
         }
 
         .div-logo strong {
-            color: #e7c013;
+            color: #000;
         }
 
         .container-login {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        .container-login input,
+        .container-login button {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 1rem;
         }
 
         .container-login input {
-            padding: 12px 15px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #000;
             outline: none;
         }
 
-        .container-login input::placeholder {
-            color: #ccc;
-        }
-
         .container-login button {
-            padding: 12px;
-            background-color: #e7c013;
-            color: #000;
+            background-color: #000;
+            color: #fff;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .container-login button:hover {
-            background-color: #f0d53b;
-            transform: scale(1.05);
+            background-color: #333;
+        }
+
+        .container-main {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+            padding: 20px;
+        }
+
+        .container-main .div-logo {
+            text-align: center;
+        }
+
+
+        .balancos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: space-between;
+        }
+
+        .balanco {
+            flex: 1 1 30%;
+            min-width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .balanco:hover {
+            transform: translateY(-5px);
+        }
+
+        .balanco h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .balanco p {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .positivo p {
+            color: #27ae60;
+        }
+
+        .negativo p {
+            color: #e74c3c;
+        }
+
+        .total p {
+            color: #3498db;
+        }
+
+        .load_movimentos {
+            width: 100%;
+            background-color: #fff;
+            height: 300px;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .btn-transacao {
+            position: sticky;
+            bottom: 10px;
+            right: 10px;
+            margin-top: 10px;
+            margin-left: auto;
+            display: block;
+            background-color: #000;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+        }
+
+        .btn-transacao:hover {
+            background-color: #333;
+        }
+
+
+        @media (max-width: 768px) {
+            .balancos {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .balanco {
+                flex: 1 1 100%;
+            }
+
+            .container-main {
+                padding: 10px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="parent-main">
         <div class="div-logo">
@@ -95,16 +205,54 @@
         </div>
     </div>
 
+    <div class="container-main">
+        <div class="div-logo">
+            <h1><strong>G</strong>Contabil</h1>
+        </div>
+
+        <div class="balancos">
+            <div id="balance_1" class="balanco positivo">
+                <h3>Entradas</h3>
+                <p>R$ 0,00</p>
+            </div>
+            <div id="balance_2" class="balanco negativo">
+                <h3>Saídas</h3>
+                <p>R$ 0,00</p>
+            </div>
+            <div id="balance_3" class="balanco total">
+                <h3>Saldo Total</h3>
+                <p>R$ 0,00</p>
+            </div>
+        </div>
+
+        <div class="load_movimentos">
+            <div class="movs">
+                <!-- CONTEUDO -->
+            </div>
+
+            <button class="btn-transacao">Nova Transação</button>
+        </div>
+
+    </div>
+
     <script>
-        function handleLogin() {
-            const password = document.getElementById('input-password').value;
-            if (password) {
-                alert('Login efetuado com sucesso!');
-                // Aqui você pode redirecionar ou validar a senha real
+        // const url = "http://localhost:3000/api";
+        const url = "https://g-contabil.vercel.app/api"
+
+        async function handleLogin() {
+            const password = document.getElementById('input-password');
+
+            const connection = await fetch(`${url}/auth/${password.value}`)
+            const dados = await connection.json();
+
+            if (dados.status == 1) {
+                document.querySelector('.container-main').style.display = "flex";
+                document.querySelector('.parent-main').style.display = "none";
             } else {
-                alert('Por favor, insira a senha.');
+                alert('Por favor, insira a senha correta!');
             }
         }
     </script>
 </body>
+
 </html>

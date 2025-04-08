@@ -7,6 +7,7 @@ const balanceController = require('../controllers/balanceController');
 
 router.post('/create', userController.createUser);
 router.get('/auth/:password', userController.authUser);
+router.get('/list', userController.listUsers);
 
 router.post('/entrie', entriesController.newEntrie);
 router.get('/entrie', entriesController.getEntries);

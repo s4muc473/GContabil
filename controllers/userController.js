@@ -31,3 +31,17 @@ exports.authUser = async (req, res) => {
   }
 };
 
+exports.listUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, 'password');
+    const total = users.length;
+
+    res.status(200).json({
+      total,
+      users
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar usuários', error });
+  }
+};
+
