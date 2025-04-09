@@ -175,6 +175,118 @@
             background-color: #333;
         }
 
+        /* Fundo do modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Conteúdo do modal */
+        .modal {
+            background: #000;
+            color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .modal select,
+        .modal input {
+            width: 100%;
+            padding: 0.6rem;
+            margin-top: 0.3rem;
+            background: #1a1a1a;
+            border: 1px solid #fff;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .modal button {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.8rem;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .modal button:hover {
+            background: #e1e1e1;
+        }
+
+        .tabela-transacoes {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .transacao-linha {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr 1fr;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        .transacao-linha:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .transacao-linha>div {
+            padding: 8px 10px;
+            border-right: 1px solid #ddd;
+            font-size: 0.95rem;
+            color: #000;
+        }
+
+        .transacao-linha>div:last-child {
+            border-right: none;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .entrada {
+            color: green;
+        }
+
+        .saida {
+            color: red;
+        }
+
 
         @media (max-width: 768px) {
             .balancos {
@@ -213,24 +325,46 @@
         <div class="balancos">
             <div id="balance_1" class="balanco positivo">
                 <h3>Entradas</h3>
-                <p>R$ 0,00</p>
+                <p id="div_total_entries">R$ 0,00</p>
             </div>
             <div id="balance_2" class="balanco negativo">
                 <h3>Saídas</h3>
-                <p>R$ 0,00</p>
+                <p id="div_total_exits">R$ 0,00</p>
             </div>
             <div id="balance_3" class="balanco total">
                 <h3>Saldo Total</h3>
-                <p>R$ 0,00</p>
+                <p id="div_balance">R$ 0,00</p>
             </div>
         </div>
 
         <div class="load_movimentos">
+            <button class="btn-transacao" onclick="novaTransacao()">Nova Transação</button>
             <div class="movs">
                 <!-- CONTEUDO -->
             </div>
+        </div>
 
-            <button class="btn-transacao">Nova Transação</button>
+        <div id="transacaoModal" class="modal-overlay">
+            <div class="modal">
+                <h2>Nova Transação</h2>
+
+                <label for="tipo">Tipo de Transação</label>
+                <select id="tipo">
+                    <option value="entrada">Entrada</option>
+                    <option value="saida">Saída</option>
+                </select>
+
+                <label for="motivo">Motivo</label>
+                <input type="text" id="motivo" placeholder="Ex: Compra, Salário...">
+
+                <label for="descricao">Descrição</label>
+                <input type="text" id="descricao" placeholder="Detalhes da transação">
+
+                <label for="valor">Valor (R$)</label>
+                <input type="number" id="valor" placeholder="Ex: 150.00" step="0.01" min="0">
+
+                <button onclick="concluirTransacao()">Concluir Transação</button>
+            </div>
         </div>
 
     </div>
@@ -252,6 +386,126 @@
                 alert('Por favor, insira a senha correta!');
             }
         }
+
+        function novaTransacao() {
+            document.getElementById('transacaoModal').style.display = 'flex';
+        }
+
+        async function concluirTransacao() {
+            const tipo = document.getElementById('tipo').value;
+            const cause = document.getElementById('motivo').value;
+            const description = document.getElementById('descricao').value;
+            const value = document.getElementById('valor').value;
+
+            if (tipo == "entrada") {
+                const response = await fetch(`${url}/entrie`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cause, description, value, observation: "none" })
+                });
+
+                const dados = await response.json();
+                console.log(dados);
+
+                geraTransacao({
+                    tipo,
+                    motivo: cause,
+                    descricao: description,
+                    valor: value
+                });
+            } else if (tipo == "saida") {
+                const response = await fetch(`${url}/exit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cause, description, value, observation: "none" })
+                });
+
+                const dados = await response.json();
+                console.log(dados);
+
+                geraTransacao({
+                    tipo,
+                    motivo: cause,
+                    descricao: description,
+                    valor: value
+                });
+            }
+
+            document.getElementById('transacaoModal').style.display = 'none';
+        }
+
+        function geraTransacao({ tipo, motivo, descricao, valor }) {
+            const container = document.querySelector('.movs');
+
+            const linha = document.createElement('div');
+            linha.classList.add('transacao-linha');
+
+            const tipoDiv = document.createElement('div');
+            tipoDiv.textContent = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+            tipoDiv.classList.add(tipo);
+
+            const motivoDiv = document.createElement('div');
+            motivoDiv.textContent = motivo;
+
+            const descricaoDiv = document.createElement('div');
+            descricaoDiv.textContent = descricao;
+
+            const valorDiv = document.createElement('div');
+            valorDiv.textContent = `R$ ${parseFloat(valor).toFixed(2)}`;
+            valorDiv.classList.add(tipo); // cor do valor
+
+            linha.appendChild(tipoDiv);
+            linha.appendChild(motivoDiv);
+            linha.appendChild(descricaoDiv);
+            linha.appendChild(valorDiv);
+
+            container.insertBefore(linha, container.firstChild);
+        }
+
+        async function listagem() {
+            const entriesConnection = await fetch(`${url}/entrie`);
+            const entries = await entriesConnection.json();
+
+            const exitsConnection = await fetch(`${url}/exit`);
+            const exits = await exitsConnection.json();
+
+            const tudo = [...entries, ...exits];
+
+            tudo.forEach(transacao => {
+                const tipo = "teste";
+                const motivo = transacao.cause;
+                const descricao = transacao.description;
+                const valor = transacao.value?.$numberDecimal || transacao.value;
+
+                geraTransacao({ tipo, motivo, descricao, valor });
+            });
+
+        }
+
+        listagem();
+
+        window.addEventListener('load', async () => {
+            const totalEntriesConnection = await fetch(`${url}/balance/entrie`)
+            const totalEntries = await totalEntriesConnection.json();
+
+            const totalExitsConnection = await fetch(`${url}/balance/exit`)
+            const totalExits = await totalExitsConnection.json();
+
+            const balanceConnection = await fetch(`${url}/balance`)
+            const balance = await balanceConnection.json();
+
+            let entries = document.getElementById("div_total_entries");
+            let exits = document.getElementById("div_total_exits");
+            let balances = document.getElementById("div_balance");
+
+            entries.innerText = `R$ ${totalEntries.total}`;
+            exits.innerText = `R$ ${totalExits.total}`;
+            balances.innerText = `R$ ${balance.balance}`;
+        });
     </script>
 </body>
 

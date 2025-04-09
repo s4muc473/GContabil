@@ -41,7 +41,7 @@ exports.getExits = async (req, res) => {
 
 exports.deleteExit = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, value } = req.params;
 
         const deletedExit = await Exit.deleteOne({ _id: id });
 
@@ -52,9 +52,19 @@ exports.deleteExit = async (req, res) => {
             });
         }
 
+        const totalExit = await BalanceController.getTotalExits();
+        const add = totalExit - value;
+
+        await Balance.findOneAndUpdate(
+            {},
+            { $set: { totalExits: add } },
+            { new: true}
+        );
+
         res.status(200).json({
             message: "Exit deletada com sucesso.",
-            status: "1"
+            status: "1",
+            Montante: totalExit,
         });
 
     } catch (error) {

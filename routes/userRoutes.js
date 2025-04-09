@@ -18,5 +18,8 @@ router.get('/exit', exitsController.getExits);
 router.get('/exit/delete/:id/:value', exitsController.deleteExit);
 
 router.get('/balance', balanceController.getBalance);
+router.get('/balance/entrie', balanceController.getTotalEntriesServer);
+router.get('/balance/exit', balanceController.getTotalExitsServer);
+
 
 module.exports = router;
