@@ -4,8 +4,8 @@ const Balance = require('../models/balance');
 
 exports.newExit = async (req, res) => {
     try {
-        const { cause, value, description, observation } = req.body;
-        const newExit = new Exit({ cause, value, description, observation });
+        const { cause, value, type, observation } = req.body;
+        const newExit = new Exit({ cause, value, type, observation });
         await newExit.save();
 
         const exitValue = Number(value);
@@ -22,8 +22,6 @@ exports.newExit = async (req, res) => {
             Transação: newExit,
             Montante: totalExits+exitValue
         });
-
-        res.status(201).json(newExit);
     } catch (error) {
         res.status(500).json({ message: 'Erro ao Criar Nova Saida', error });
         console.log(error);

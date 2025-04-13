@@ -4,8 +4,8 @@ const Balance = require('../models/balance');
 
 exports.newEntrie = async (req, res) => {
     try {
-        const { cause, value, description, observation } = req.body;
-        const newEntrie = new Entrie({ cause, value, description, observation });
+        const { cause, value, type, observation } = req.body;
+        const newEntrie = new Entrie({ cause, value, type, observation });
         await newEntrie.save();
 
         const entrieValue = Number(value);

@@ -250,20 +250,28 @@
             max-width: 800px;
             margin: 2rem auto;
             border: 1px solid #ccc;
-            border-collapse: collapse;
             font-family: 'Segoe UI', sans-serif;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         .transacao-linha {
             display: grid;
-            grid-template-columns: 1fr 1fr 2fr 1fr;
-            padding: 10px;
+            grid-template-columns: 0.5fr 2fr 0.5fr 0.5fr 0.5fr auto;
+            align-items: center;
+            padding: 10px 0;
             border-bottom: 1px solid #ddd;
             background-color: #fff;
+            transition: background-color 0.3s ease;
         }
 
         .transacao-linha:nth-child(even) {
             background-color: #f9f9f9;
+        }
+
+        .transacao-linha:hover {
+            background-color: #f1f1f1;
         }
 
         .transacao-linha>div {
@@ -286,6 +294,24 @@
         .saida {
             color: red;
         }
+
+        .btn-deletar {
+            background-color: #ff4d4f;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.2s ease;
+            margin-right: 10px;
+        }
+
+        .btn-deletar:hover {
+            background-color: #e60000;
+        }
+
+
 
 
         @media (max-width: 768px) {
@@ -313,7 +339,7 @@
 
         <div class="container-login">
             <input type="password" placeholder="Senha" id="input-password">
-            <button onclick="handleLogin()">Entrar</button>
+            <button id="btnLogin">Entrar</button>
         </div>
     </div>
 
@@ -357,8 +383,8 @@
                 <label for="motivo">Motivo</label>
                 <input type="text" id="motivo" placeholder="Ex: Compra, Salário...">
 
-                <label for="descricao">Descrição</label>
-                <input type="text" id="descricao" placeholder="Detalhes da transação">
+                <!-- <label for="descricao">Descrição</label>
+                <input type="text" id="descricao" placeholder="Detalhes da transação"> -->
 
                 <label for="valor">Valor (R$)</label>
                 <input type="number" id="valor" placeholder="Ex: 150.00" step="0.01" min="0">
@@ -372,20 +398,23 @@
     <script>
         // const url = "http://localhost:3000/api";
         const url = "https://g-contabil.vercel.app/api"
+        localStorage.test = 0
 
-        async function handleLogin() {
+        document.getElementById('btnLogin').addEventListener("click", async function () {
             const password = document.getElementById('input-password');
+
 
             const connection = await fetch(`${url}/auth/${password.value}`)
             const dados = await connection.json();
 
             if (dados.status == 1) {
+                localStorage.test = 1;
                 document.querySelector('.container-main').style.display = "flex";
                 document.querySelector('.parent-main').style.display = "none";
             } else {
                 alert('Por favor, insira a senha correta!');
             }
-        }
+        });
 
         function novaTransacao() {
             document.getElementById('transacaoModal').style.display = 'flex';
@@ -394,55 +423,55 @@
         async function concluirTransacao() {
             const tipo = document.getElementById('tipo').value;
             const cause = document.getElementById('motivo').value;
-            const description = document.getElementById('descricao').value;
             const value = document.getElementById('valor').value;
 
+            let response;
+
             if (tipo == "entrada") {
-                const response = await fetch(`${url}/entrie`, {
+                response = await fetch(`${url}/entrie`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cause, description, value, observation: "none" })
+                    body: JSON.stringify({ cause, type: "Entrada", value, observation: "inative" })
                 });
 
-                const dados = await response.json();
-                console.log(dados);
-
-                geraTransacao({
-                    tipo,
-                    motivo: cause,
-                    descricao: description,
-                    valor: value
-                });
             } else if (tipo == "saida") {
-                const response = await fetch(`${url}/exit`, {
+                response = await fetch(`${url}/exit`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ cause, description, value, observation: "none" })
-                });
-
-                const dados = await response.json();
-                console.log(dados);
-
-                geraTransacao({
-                    tipo,
-                    motivo: cause,
-                    descricao: description,
-                    valor: value
+                    body: JSON.stringify({ cause, type: "Saída", value, observation: "inative" })
                 });
             }
 
+            if (response.ok) {
+                const dados = await response.json();
+                console.log(dados);
+
+                await pushDates();
+
+                geraTransacao({
+                    tipo,
+                    motivo: cause,
+                    valor: value,
+                    data: new Date().toISOString(), 
+                    id: dados._id || null            
+                });
+            }
+
+            // Fecha o modal
             document.getElementById('transacaoModal').style.display = 'none';
         }
 
-        function geraTransacao({ tipo, motivo, descricao, valor }) {
+
+        function geraTransacao({ tipo, motivo, data, valor, id = null }) {
             const container = document.querySelector('.movs');
 
             const linha = document.createElement('div');
             linha.classList.add('transacao-linha');
+
 
             const tipoDiv = document.createElement('div');
             tipoDiv.textContent = tipo.charAt(0).toUpperCase() + tipo.slice(1);
@@ -451,22 +480,49 @@
             const motivoDiv = document.createElement('div');
             motivoDiv.textContent = motivo;
 
-            const descricaoDiv = document.createElement('div');
-            descricaoDiv.textContent = descricao;
-
             const valorDiv = document.createElement('div');
             valorDiv.textContent = `R$ ${parseFloat(valor).toFixed(2)}`;
-            valorDiv.classList.add(tipo); // cor do valor
+            valorDiv.classList.add(tipo);
+
+            const dataDiv = document.createElement('div');
+            const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
+            dataDiv.textContent = dataFormatada;
+
+            const botaoExcluir = document.createElement('button');
+            botaoExcluir.textContent = 'Excluir';
+            botaoExcluir.classList.add('btn-deletar');
+
+            linha.dataset.id = id;
+            linha.dataset.valor = valor;
+            // Ação de excluir linha
+            botaoExcluir.addEventListener('click', async () => {
+                const idTransacao = linha.dataset.id;
+                const valorTransacao = linha.dataset.valor;
+
+                if (tipo == "Entrada") {
+                    const connection = await fetch(`${url}/entrie/delete/${idTransacao}/${valorTransacao}`);
+                } else {
+                    const connection = await fetch(`${url}/exit/delete/${idTransacao}/${valorTransacao}`);
+                }
+
+                await pushDates();
+                linha.remove();
+            });
+            const botaoDiv = document.createElement('div');
+            botaoDiv.appendChild(botaoExcluir);
 
             linha.appendChild(tipoDiv);
             linha.appendChild(motivoDiv);
-            linha.appendChild(descricaoDiv);
             linha.appendChild(valorDiv);
+            linha.appendChild(dataDiv);
+            linha.appendChild(botaoDiv);
 
             container.insertBefore(linha, container.firstChild);
         }
 
         async function listagem() {
+            const container = document.querySelector('.movs');
+            container.innerHTML = "";
             const entriesConnection = await fetch(`${url}/entrie`);
             const entries = await entriesConnection.json();
 
@@ -474,21 +530,23 @@
             const exits = await exitsConnection.json();
 
             const tudo = [...entries, ...exits];
+            console.log(tudo)
+
+            tudo.sort((a, b) => new Date(a.date) - new Date(b.date));
 
             tudo.forEach(transacao => {
-                const tipo = "teste";
+                const tipo = transacao.type;
                 const motivo = transacao.cause;
-                const descricao = transacao.description;
                 const valor = transacao.value?.$numberDecimal || transacao.value;
+                const data = transacao.date;
+                const id = transacao._id;
 
-                geraTransacao({ tipo, motivo, descricao, valor });
+                geraTransacao({ tipo, motivo, valor, data, id });
             });
-
         }
 
-        listagem();
 
-        window.addEventListener('load', async () => {
+        async function pushDates(params) {
             const totalEntriesConnection = await fetch(`${url}/balance/entrie`)
             const totalEntries = await totalEntriesConnection.json();
 
@@ -505,6 +563,11 @@
             entries.innerText = `R$ ${totalEntries.total}`;
             exits.innerText = `R$ ${totalExits.total}`;
             balances.innerText = `R$ ${balance.balance}`;
+        }
+
+        window.addEventListener('load', async () => {
+            await listagem();
+            await pushDates();
         });
     </script>
 </body>

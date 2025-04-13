@@ -15,7 +15,7 @@ const entrieSchema = new mongoose.Schema({
         default: Date.now, 
         required: true 
     },
-    description: { 
+    type: { 
         type: String, 
         required: false, 
         trim: true 

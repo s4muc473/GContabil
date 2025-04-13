@@ -17,6 +17,10 @@ app.get('/', (req, res) => {
   res.render('index'); 
 });
 
+app.get('/painel',(req, res) => {
+  res.render('createPassword');
+});
+
 // Usando rotas
 app.use('/api', userRoutes);
 
