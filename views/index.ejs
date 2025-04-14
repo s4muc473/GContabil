@@ -452,13 +452,15 @@
 
                 await pushDates();
 
-                geraTransacao({
-                    tipo,
-                    motivo: cause,
-                    valor: value,
-                    data: new Date().toISOString(), 
-                    id: dados.Transação._id || null            
-                });
+                // geraTransacao({
+                //     tipo,
+                //     motivo: cause,
+                //     valor: value,
+                //     data: new Date().toISOString(), 
+                //     id: dados.Transação._id || null            
+                // });
+
+                await listagem();
             }
 
             // Fecha o modal
@@ -466,7 +468,7 @@
         }
 
 
-        function geraTransacao({ tipo, motivo, data, valor, id = null }) {
+        function geraTransacao({ tipo, motivo, data, valor, id }) {
             const container = document.querySelector('.movs');
 
             const linha = document.createElement('div');
@@ -501,7 +503,7 @@
 
                 if (tipo == "Entrada") {
                     const connection = await fetch(`${url}/entrie/delete/${idTransacao}/${valorTransacao}`);
-                } else {
+                } else if (tipo == "Saída") {
                     const connection = await fetch(`${url}/exit/delete/${idTransacao}/${valorTransacao}`);
                 }
 
