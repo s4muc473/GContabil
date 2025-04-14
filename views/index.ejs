@@ -373,7 +373,7 @@
         <div id="transacaoModal" class="modal-overlay">
             <div class="modal" style="position: relative;">
                 <!-- Botão de fechar no canto da modal (bloco branco) -->
-                <button onclick="fecharModal()" style="position: absolute; float: right; width: 10%; top: 5px; left: 30px; background: transparent; border: none; font-size: 18px; cursor: pointer; color:#e60000;">✕</button>
+                <button onclick="fecharModal()" style="position: relative; bottom: 30px; float: right; width: 10%; background: transparent; border: none; font-size: 18px; cursor: pointer; color:#e60000;">✕</button>
         
                 <h2>Nova Transação</h2>
         
@@ -406,8 +406,8 @@
     </div>
 
     <script>
-        // const url = "http://localhost:3000/api";
-        const url = "https://g-contabil.vercel.app/api"
+        const url = "http://localhost:3000/api";
+        // const url = "https://g-contabil.vercel.app/api"
         localStorage.test = 0
 
         document.getElementById('btnLogin').addEventListener("click", async function () {
