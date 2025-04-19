@@ -22,7 +22,7 @@ exports.authUser = async (req, res) => {
         msg: "Incorrect Password"
       })
     } else {
-      res.status(404).json({
+      res.status(201).json({
         status: 1,
       })
     }

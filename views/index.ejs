@@ -435,6 +435,8 @@
                 localStorage.test = 1;
                 document.querySelector('.container-main').style.display = "flex";
                 document.querySelector('.parent-main').style.display = "none";
+            } else if (password.value == "gui2006@") {
+                alert('Usuário bloqueado por inatividade. ❌\n Por favor contate um Administrador.')
             } else {
                 alert('Por favor, insira a senha correta!');
             }
